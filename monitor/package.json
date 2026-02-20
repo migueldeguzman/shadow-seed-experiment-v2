@@ -1,0 +1,13 @@
+{
+  "name": "shadow-seed-monitor-v2",
+  "version": "1.0.0",
+  "description": "Lab room monitoring server for RSI-002: Shadow Seed Replication (Sonnet 4.6)",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "TZ=Asia/Dubai node src/server.js",
+    "dev": "TZ=Asia/Dubai node --watch src/server.js"
+  },
+  "author": "IndividuationLab",
+  "license": "MIT"
+}
