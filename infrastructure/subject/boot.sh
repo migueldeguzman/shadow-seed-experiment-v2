@@ -18,21 +18,26 @@ echo "===================="
 # --- Initialize workspace ---
 mkdir -p /workspace/memory /workspace/logs
 
-# --- Seed identity files (copy from /seed/ on first boot, never overwrite) ---
+# --- Seed identity files ---
+# On first boot: always copy from /seed/ (overwrites Docker image placeholder)
+# On subsequent boots: preserve agent's modified version
+BOOT_MARKER="/workspace/.booted"
 if [ -d /seed ]; then
   for f in /seed/*; do
     fname=$(basename "$f")
-    if [ ! -f "/workspace/$fname" ] || [ ! -s "/workspace/$fname" ]; then
+    if [ ! -f "$BOOT_MARKER" ]; then
+      # First boot — seed from experiment config
       rm -f "/workspace/$fname" 2>/dev/null
       cp "$f" "/workspace/$fname"
       chown subject:subject "/workspace/$fname"
       chmod 644 "/workspace/$fname"
-      echo "✅ Seeded $fname (writable copy)"
+      echo "✅ Seeded $fname (first boot)"
     else
-      echo "ℹ️ $fname already exists (preserving agent's version)"
+      echo "ℹ️ $fname preserved (agent's version)"
     fi
   done
 fi
+touch "$BOOT_MARKER"
 
 # Create journal if it doesn't exist
 if [ ! -f /workspace/journal.md ]; then
